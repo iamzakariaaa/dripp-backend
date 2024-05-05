@@ -1,8 +1,11 @@
 package com.springboot.drip.controller;
 
+import com.springboot.drip.dto.OrderDto;
 import com.springboot.drip.model.Item;
 import com.springboot.drip.model.Order;
+import com.springboot.drip.model.User;
 import com.springboot.drip.service.OrderService;
+import com.springboot.drip.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,37 +20,28 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping
-    public ResponseEntity<Order> addOrder(@RequestBody Order order) {
-        Order addedOrder = orderService.addOrder(order);
-        return new ResponseEntity<>(addedOrder, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
-        Order order = orderService.getOrderById(id);
-        if (order != null) {
-            return new ResponseEntity<>(order, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<OrderDto> addOrder(@RequestBody OrderDto orderDto) {
+        // Assuming you have a method to retrieve the user by ID from the UserService
+        User user = userService.getUserById(orderDto.getCustomerId());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
-        List<Order> orders = orderService.getAllOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        orderDto = orderService.addOrder(orderDto);
+        return new ResponseEntity<>(orderDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order order) {
-        order.setId(id);
-        Order updatedOrder = orderService.updateOrder(order);
-        if (updatedOrder != null) {
-            return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable Long id, @RequestBody OrderDto orderDto) {
+        // Ensure that the ID in the path variable matches the ID in the DTO
+        if (!id.equals(orderDto.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        orderDto = orderService.updateOrder(orderDto);
+        return new ResponseEntity<>(orderDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -55,17 +49,20 @@ public class OrderController {
         orderService.deleteOrder(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @PutMapping("/cancel/{id}")
-    public ResponseEntity<String> cancelOrder(@PathVariable Long id) {
-        try {
-            orderService.cancelOrder(id);
-            return ResponseEntity.ok("Order with ID " + id + " has been successfully closed.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while closing the order.");
-        }
+
+    @GetMapping
+    public ResponseEntity<List<OrderDto>> getAllOrders() {
+        List<OrderDto> orderDtos = orderService.getAllOrders();
+        return new ResponseEntity<>(orderDtos, HttpStatus.OK);
     }
 
-
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable Long id) {
+        OrderDto orderDto = orderService.getOrderById(id);
+        if (orderDto != null) {
+            return new ResponseEntity<>(orderDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

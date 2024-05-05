@@ -1,13 +1,16 @@
 package com.springboot.drip.service;
 
+import com.springboot.drip.dto.ItemDto;
 import com.springboot.drip.model.Item;
 
 import java.util.List;
 
+import java.util.List;
+
 public interface ItemService {
-    Item addItem(Item item);
-    Item updateItem(Item item);
+    ItemDto addItem(ItemDto itemDTO);
+    ItemDto updateItem(ItemDto itemDTO);
     void deleteItem(Long itemId);
-    List<Item> getAllItems();
-    Item getItemById(Long itemId);
+    List<ItemDto> getAllItems();
+    ItemDto getItemById(Long itemId);
 }

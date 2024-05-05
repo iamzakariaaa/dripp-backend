@@ -1,16 +1,15 @@
 package com.springboot.drip.service;
 
-import com.springboot.drip.enums.Status;
+import com.springboot.drip.dto.ItemDto;
+import com.springboot.drip.dto.OrderDto;
 import com.springboot.drip.model.Item;
 import com.springboot.drip.model.Order;
 import com.springboot.drip.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -20,27 +19,22 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
-    public Order addOrder(Order order) {
-        order.setStatus(Status.PENDING);
-        BigDecimal totalAmount = calculateTotalAmount(order);
-        order.setTotalAmount(totalAmount);
-        return orderRepository.save(order);
-    }
-    @Override
-    public void cancelOrder(Long orderId) {
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            order.setStatus(Status.CANCELED);
-            orderRepository.save(order);
-        } else {
-            throw new IllegalArgumentException("Order with ID " + orderId + " not found");
-        }
+    public OrderDto addOrder(OrderDto orderDto) {
+        Order order = mapToEntity(orderDto);
+        order = orderRepository.save(order);
+        return mapToDto(order);
     }
 
     @Override
-    public Order updateOrder(Order order) {
-        return orderRepository.save(order);
+    public OrderDto updateOrder(OrderDto orderDto) {
+        Order order = orderRepository.findById(orderDto.getId())
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        // Update order properties
+        order.setAddress(orderDto.getAddress());
+        order.setPhoneNumber(orderDto.getPhoneNumber());
+        // Update other properties as needed
+        order = orderRepository.save(order);
+        return mapToDto(order);
     }
 
     @Override
@@ -49,22 +43,53 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public List<OrderDto> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Order getOrderById(Long orderId) {
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        return optionalOrder.orElse(null);
+    public OrderDto getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        return mapToDto(order);
     }
 
-    private BigDecimal calculateTotalAmount(Order order) {
-        BigDecimal totalAmount = BigDecimal.ZERO;
-        for (Item item : order.getItems()) {
-            totalAmount = totalAmount.add(item.getAmount());
-        }
-        return totalAmount;
+    // Helper method to map entity to DTO
+    private OrderDto mapToDto(Order order) {
+        return OrderDto.builder()
+                .id(order.getId())
+                .address(order.getAddress())
+                .phoneNumber(order.getPhoneNumber())
+                .createdAt(order.getCreatedAt())
+                .totalAmount(order.getTotalAmount())
+                .status(order.getStatus())
+                .customerId(order.getCustomer().getId())
+                .items(order.getItems().stream().map(this::mapItemToDto).collect(Collectors.toList()))
+                .build();
+    }
+
+    // Helper method to map Item entity to ItemDto
+    private ItemDto mapItemToDto(Item item) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .productId(item.getProduct().getId())
+                .quantity(item.getQuantity())
+                .amount(item.getAmount())
+                .build();
+    }
+
+    // Helper method to map DTO to entity
+    private Order mapToEntity(OrderDto orderDto) {
+        Order order = new Order();
+        order.setId(orderDto.getId());
+        order.setAddress(orderDto.getAddress());
+        order.setPhoneNumber(orderDto.getPhoneNumber());
+        // Map other properties as needed
+        return order;
     }
 }
+
 

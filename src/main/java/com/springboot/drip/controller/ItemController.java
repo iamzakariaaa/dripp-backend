@@ -1,5 +1,6 @@
 package com.springboot.drip.controller;
 
+import com.springboot.drip.dto.ItemDto;
 import com.springboot.drip.model.Item;
 import com.springboot.drip.model.Product;
 import com.springboot.drip.service.ItemService;
@@ -24,44 +25,42 @@ public class ItemController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<Item>> getAllItems() {
-        List<Item> items = itemService.getAllItems();
-        return new ResponseEntity<>(items, HttpStatus.OK);
+    public ResponseEntity<List<ItemDto>> getAllItems() {
+        List<ItemDto> itemDtos = itemService.getAllItems();
+        return new ResponseEntity<>(itemDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Item> getItemById(@PathVariable Long id) {
-        Item item = itemService.getItemById(id);
-        if (item != null) {
-            return new ResponseEntity<>(item, HttpStatus.OK);
+    public ResponseEntity<ItemDto> getItemById(@PathVariable Long id) {
+        ItemDto itemDto = itemService.getItemById(id);
+        if (itemDto != null) {
+            return new ResponseEntity<>(itemDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/addToCart/{id}")
-    public ResponseEntity<Item> addItem(@PathVariable Long id) {
+    public ResponseEntity<ItemDto> addItem(@PathVariable Long id) {
         Product product = productService.getProductById(id);
         if (product == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Item item = new Item();
-        item.setProduct(product);
-        item.setQuantity(1);
-        BigDecimal amount = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-        item.setAmount(amount);
-        Item addedItem = itemService.addItem(item);
-        return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
+        ItemDto itemDto = new ItemDto();
+        itemDto.setProductId(product.getId());
+        itemDto.setQuantity(1);
+        BigDecimal amount = product.getPrice().multiply(BigDecimal.valueOf(itemDto.getQuantity()));
+        itemDto.setAmount(amount);
+        ItemDto addedItemDto = itemService.addItem(itemDto);
+        return new ResponseEntity<>(addedItemDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Item> updateItem(@PathVariable Long id, @RequestBody Item item) {
-        BigDecimal amount = item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-        item.setAmount(amount);
-        item.setId(id);
-        Item updatedItem = itemService.updateItem(item);
-        if (updatedItem != null) {
-            return new ResponseEntity<>(updatedItem, HttpStatus.OK);
+    public ResponseEntity<ItemDto> updateItem(@PathVariable Long id, @RequestBody ItemDto itemDto) {
+        itemDto.setId(id); // Make sure the ID is set from path variable
+        ItemDto updatedItemDto = itemService.updateItem(itemDto);
+        if (updatedItemDto != null) {
+            return new ResponseEntity<>(updatedItemDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
