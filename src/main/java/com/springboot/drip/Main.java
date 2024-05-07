@@ -23,9 +23,10 @@ public class Main implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		createUserIfNotExist();
+		createAdminIfNotExist();
 	}
 
-	private void createUserIfNotExist() {
+	private void createAdminIfNotExist() {
 		if (userService.getUserByEmail("admin@drip.com") == null) {
 			User admin = new User();
 			admin.setFirstName("Zakaria");
@@ -36,6 +37,21 @@ public class Main implements CommandLineRunner {
 			userService.addUser(admin);
 
 			System.out.println("Admin created !!");
+		} else {
+			System.out.println("Error");
+		}
+	}
+	private void createUserIfNotExist() {
+		if (userService.getUserByEmail("customer@drip.com") == null) {
+			User user = new User();
+			user.setFirstName("Zakaria");
+			user.setLastName("Customer");
+			user.setEmail("customer@drip.com");
+			user.setPassword("12345");
+			user.setRole(Role.CUSTOMER);
+			userService.addUser(user);
+
+			System.out.println("Customer created too!!");
 		} else {
 			System.out.println("Error");
 		}
