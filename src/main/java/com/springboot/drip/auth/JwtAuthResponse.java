@@ -1,4 +1,4 @@
-package com.springboot.drip.dto;
+package com.springboot.drip.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

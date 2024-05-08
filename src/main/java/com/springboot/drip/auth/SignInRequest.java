@@ -1,4 +1,4 @@
-package com.springboot.drip.dto;
+package com.springboot.drip.auth;
 
 import lombok.*;
 
@@ -6,9 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpRequest {
-    private String firstName;
-    private String lastName;
+public class SignInRequest {
     private String email;
     private String password;
 }

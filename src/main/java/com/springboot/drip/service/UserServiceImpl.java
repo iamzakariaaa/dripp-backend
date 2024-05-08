@@ -1,7 +1,8 @@
 package com.springboot.drip.service;
 
-import com.springboot.drip.dto.UserDto;
+
 import com.springboot.drip.model.User;
+import com.springboot.drip.model.UserDto;
 import com.springboot.drip.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

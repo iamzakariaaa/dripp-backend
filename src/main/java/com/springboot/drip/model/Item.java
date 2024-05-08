@@ -26,9 +26,6 @@ public class Item {
     @Column(scale = 2)
     private BigDecimal amount;
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private User customer;
-    @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 }

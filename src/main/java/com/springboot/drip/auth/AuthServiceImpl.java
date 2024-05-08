@@ -1,9 +1,6 @@
 package com.springboot.drip.auth;
 
 import com.springboot.drip.config.JwtUtils;
-import com.springboot.drip.dto.JwtAuthResponse;
-import com.springboot.drip.dto.SignInRequest;
-import com.springboot.drip.dto.SignUpRequest;
 import com.springboot.drip.enums.Role;
 import com.springboot.drip.model.User;
 import com.springboot.drip.repository.UserRepository;

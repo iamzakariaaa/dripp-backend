@@ -1,7 +1,7 @@
 package com.springboot.drip.controller;
 
-import com.springboot.drip.dto.UserDto;
 import com.springboot.drip.model.User;
+import com.springboot.drip.model.UserDto;
 import com.springboot.drip.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,8 +33,13 @@ public class UserController {
     }
 
     @GetMapping("/email/{email}")
-    public UserDto getUserByEmail(@PathVariable String email) {
-        return userService.getUserByEmail(email);
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
+        UserDto userDto = userService.getUserByEmail(email);
+        if (userDto != null) {
+            return new ResponseEntity<>(userDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping

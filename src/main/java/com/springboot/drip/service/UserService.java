@@ -1,7 +1,8 @@
 package com.springboot.drip.service;
 
-import com.springboot.drip.dto.UserDto;
+
 import com.springboot.drip.model.User;
+import com.springboot.drip.model.UserDto;
 
 import java.util.List;
 
