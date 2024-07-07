@@ -1,5 +1,6 @@
 package com.springboot.drip.controller;
 
+import com.springboot.drip.dto.OrderDTO;
 import com.springboot.drip.model.Item;
 import com.springboot.drip.model.Order;
 import com.springboot.drip.model.User;
@@ -54,9 +55,9 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
-        List<Order> orders = orderService.getAllOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        List<OrderDTO> orderDTOs = orderService.getAllOrders();
+        return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -1,7 +1,9 @@
 package com.springboot.drip.controller;
 
 import com.springboot.drip.model.Item;
+import com.springboot.drip.model.Order;
 import com.springboot.drip.model.Product;
+import com.springboot.drip.model.User;
 import com.springboot.drip.service.ItemService;
 import com.springboot.drip.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,12 @@ public class ItemController {
     @Autowired
     private ProductService productService;
 
+
+    @PostMapping
+    public ResponseEntity<Item> addItem(@RequestBody Item item) {
+        itemService.addItem(item);
+        return new ResponseEntity<>(item, HttpStatus.CREATED);
+    }
     @GetMapping
     public ResponseEntity<List<Item>> getAllItems() {
         List<Item> items = itemService.getAllItems();
