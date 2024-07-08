@@ -3,7 +3,7 @@ package com.springboot.drip.controller;
 import com.springboot.drip.dto.OrderDTO;
 import com.springboot.drip.model.Item;
 import com.springboot.drip.model.Order;
-import com.springboot.drip.model.User;
+import com.springboot.drip.dto.UserDTO;
 import com.springboot.drip.service.ItemService;
 import com.springboot.drip.service.OrderService;
 import com.springboot.drip.service.UserService;
@@ -27,7 +27,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> addOrder(@RequestBody Order order) {
-        User user = userService.getUserById(order.getCustomer().getId());
+        UserDTO user = userService.getUserById(order.getCustomer().getId());
         List<Item> items = order.getItems();
         order.setItems(items);
 

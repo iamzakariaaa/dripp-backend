@@ -2,15 +2,15 @@ package com.springboot.drip.service;
 
 
 import com.springboot.drip.model.User;
-import com.springboot.drip.model.UserDto;
+import com.springboot.drip.dto.UserDTO;
 
 import java.util.List;
 
 public interface UserService {
     User addUser(User user);
-    UserDto getUserByEmail(String email);
-    User getUserById(Long id);
-    List<User> getAllUsers();
+    UserDTO getUserByEmail(String email);
+    UserDTO getUserById(Long id);
+    List<UserDTO> getAllUsers();
     void deleteUser(Long id);
-    User updateUser(User user);
+    UserDTO updateUser(UserDTO user);
 }

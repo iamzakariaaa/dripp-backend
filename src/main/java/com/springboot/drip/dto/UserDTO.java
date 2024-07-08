@@ -1,4 +1,4 @@
-package com.springboot.drip.model;
+package com.springboot.drip.dto;
 
 import com.springboot.drip.enums.Role;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
+public class UserDTO {
     private Long id;
     private String firstName;
     private String lastName;
