@@ -25,7 +25,7 @@ public class Item {
     private int quantity;
     @Column(scale = 2)
     private BigDecimal amount;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;
 }
